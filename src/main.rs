@@ -1,6 +1,6 @@
 use ruscii::app::{App, State};
 use ruscii::terminal::Window;
-use ruscii::drawing::Pencil;
+use ruscii::drawing::{Pencil, RectCharset};
 use ruscii::keyboard::{KeyEvent, Key};
 use ruscii::spatial::Vec2;
 use ruscii::gui::FPSCounter;
@@ -111,7 +111,8 @@ fn main() {
 
         let mut pencil = Pencil::new(window.canvas_mut());
         pencil.draw_text(&format!("FPS: {}", fps_counter.count()), Vec2::xy(1, 1))
-            .draw_char('a', state.food_position);
+            .draw_char('a', state.food_position)
+            .draw_rect(&RectCharset::double_lines(), Vec2::xy(1, 1), Vec2::xy(winsize.x - 1, winsize.y - 1));
         state.snake.draw(pencil)
     });
 }
