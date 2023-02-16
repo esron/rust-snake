@@ -1,9 +1,9 @@
 use ruscii::app::{App, State};
-use ruscii::terminal::Window;
 use ruscii::drawing::{Pencil, RectCharset};
-use ruscii::keyboard::{KeyEvent, Key};
-use ruscii::spatial::Vec2;
 use ruscii::gui::FPSCounter;
+use ruscii::keyboard::{Key, KeyEvent};
+use ruscii::spatial::Vec2;
+use ruscii::terminal::Window;
 
 use rand::{self, prelude::*};
 
@@ -49,12 +49,12 @@ impl GameState {
     pub fn new(winsize: Vec2) -> Self {
         let center_of_win = Vec2::xy(winsize.x / 2, winsize.y / 2);
         Self {
-            snake: SnakeState { 
-                head: center_of_win, 
-                direction: Vec2::xy(0, -1), 
+            snake: SnakeState {
+                head: center_of_win,
+                direction: Vec2::xy(0, -1),
                 speed: 5,
                 tail: vec![
-                    Vec2::xy(center_of_win.x, center_of_win.y + 1), 
+                    Vec2::xy(center_of_win.x, center_of_win.y + 1),
                     Vec2::xy(center_of_win.x, center_of_win.y + 2),
                 ],
             },
@@ -84,7 +84,6 @@ fn main() {
     let winsize = app.window().size();
     let mut state = GameState::new(winsize);
 
-
     app.run(|app_state: &mut State, window: &mut Window| {
         for key_event in app_state.keyboard().last_key_events() {
             match key_event {
@@ -92,13 +91,13 @@ fn main() {
                 KeyEvent::Pressed(Key::Q) => app_state.stop(),
                 KeyEvent::Pressed(Key::A) => {
                     state.snake.direction = Vec2::xy(-1, 0);
-                },
+                }
                 KeyEvent::Pressed(Key::S) => {
                     state.snake.direction = Vec2::xy(0, 1);
-                },
+                }
                 KeyEvent::Pressed(Key::D) => {
                     state.snake.direction = Vec2::xy(1, 0);
-                },
+                }
                 KeyEvent::Pressed(Key::W) => {
                     state.snake.direction = Vec2::xy(0, -1);
                 }
@@ -110,9 +109,14 @@ fn main() {
         state.update(app_state.step(), winsize);
 
         let mut pencil = Pencil::new(window.canvas_mut());
-        pencil.draw_text(&format!("FPS: {}", fps_counter.count()), Vec2::xy(1, 1))
+        pencil
+            .draw_text(&format!("FPS: {}", fps_counter.count()), Vec2::xy(1, 1))
             .draw_char('a', state.food_position)
-            .draw_rect(&RectCharset::double_lines(), Vec2::xy(1, 1), Vec2::xy(winsize.x - 1, winsize.y - 1));
+            .draw_rect(
+                &RectCharset::double_lines(),
+                Vec2::xy(1, 1),
+                Vec2::xy(winsize.x - 1, winsize.y - 1),
+            );
         state.snake.draw(pencil)
     });
 }
