@@ -34,6 +34,10 @@ impl SnakeState {
             pencil.draw_char('#', *part);
         }
     }
+
+    pub fn add_tail(&mut self, position: Vec2) {
+        self.tail.push(position)
+    }
 }
 
 struct GameState {
@@ -65,8 +69,12 @@ impl GameState {
         Vec2::xy(x, y)
     }
 
-    pub fn update(&mut self, frame: usize) {
+    pub fn update(&mut self, frame: usize, winsize: Vec2) {
         self.snake.update(frame);
+        if self.snake.head == self.food_position {
+            self.snake.add_tail(self.food_position.clone());
+            self.food_position = Self::random_food_position(winsize);
+        }
     }
 }
 
@@ -99,7 +107,7 @@ fn main() {
         }
 
         fps_counter.update();
-        state.update(app_state.step());
+        state.update(app_state.step(), winsize);
 
         let mut pencil = Pencil::new(window.canvas_mut());
         pencil.draw_text(&format!("FPS: {}", fps_counter.count()), Vec2::xy(1, 1))
